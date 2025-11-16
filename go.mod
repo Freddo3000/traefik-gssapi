@@ -1,4 +1,4 @@
-module github.com/traefik/plugindemo
+module github.com/freddo3000/traefik-gssapi
 
 go 1.25
 
