@@ -1,4 +1,4 @@
-package plugindemo_test
+package traefik_gssapi_test
 
 import (
 	"context"
@@ -6,21 +6,16 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/traefik/plugindemo"
+	"github.com/freddo3000/traefik-gssapi"
 )
 
 func TestDemo(t *testing.T) {
-	cfg := plugindemo.CreateConfig()
-	cfg.Headers["X-Host"] = "[[.Host]]"
-	cfg.Headers["X-Method"] = "[[.Method]]"
-	cfg.Headers["X-URL"] = "[[.URL]]"
-	cfg.Headers["X-URL"] = "[[.URL]]"
-	cfg.Headers["X-Demo"] = "test"
+	cfg := traefik_gssapi.CreateConfig()
 
 	ctx := context.Background()
 	next := http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {})
 
-	handler, err := plugindemo.New(ctx, next, cfg, "demo-plugin")
+	handler, err := traefik_gssapi.New(ctx, next, cfg, "demo-plugin")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -37,7 +32,7 @@ func TestDemo(t *testing.T) {
 	assertHeader(t, req, "X-Host", "localhost")
 	assertHeader(t, req, "X-URL", "http://localhost")
 	assertHeader(t, req, "X-Method", "GET")
-	assertHeader(t, req, "X-Demo", "test")
+	assertHeader(t, req, "X-GssAuth", "test")
 }
 
 func assertHeader(t *testing.T, req *http.Request, key, expected string) {

@@ -1,12 +1,10 @@
-displayName: Demo Plugin
+displayName: GSSAPI Auth
 type: middleware
-iconPath: .assets/icon.png
+iconPath: .assets/dog-ring.jpg
 
-import: github.com/traefik/plugindemo
+import: github.com/freddo3000/traefik-gssapi
 
-summary: '[Demo] Add Request Header'
+summary: 'GSSAPI Authentication Middleware'
 
 testData:
-  Headers:
-    X-Demo: test
-    X-URL: '{{URL}}'
+  Keytab: '/etc/krb5.keytab'
