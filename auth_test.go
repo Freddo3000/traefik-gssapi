@@ -9,13 +9,13 @@ import (
 	"github.com/freddo3000/traefik-gssapi"
 )
 
-func TestDemo(t *testing.T) {
+func TestAuth(t *testing.T) {
 	cfg := traefik_gssapi.CreateConfig()
 
 	ctx := context.Background()
 	next := http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {})
 
-	handler, err := traefik_gssapi.New(ctx, next, cfg, "demo-plugin")
+	handler, err := traefik_gssapi.New(ctx, next, cfg, "gss-auth-plugin")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -29,16 +29,10 @@ func TestDemo(t *testing.T) {
 
 	handler.ServeHTTP(recorder, req)
 
-	assertHeader(t, req, "X-Host", "localhost")
-	assertHeader(t, req, "X-URL", "http://localhost")
-	assertHeader(t, req, "X-Method", "GET")
-	assertHeader(t, req, "X-GssAuth", "test")
-}
-
-func assertHeader(t *testing.T, req *http.Request, key, expected string) {
-	t.Helper()
-
-	if req.Header.Get(key) != expected {
-		t.Errorf("invalid header value: %s", req.Header.Get(key))
+	if recorder.Code != http.StatusUnauthorized {
+		t.Fatalf("unexpected status code: %d", recorder.Code)
+	}
+	if recorder.Header().Get("Www-Authenticate") != "Negotiate" {
+		t.Fatalf("unexpected header value: %s", recorder.Header().Get("Www-Authenticate"))
 	}
 }
