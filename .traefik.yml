@@ -5,6 +5,7 @@ iconPath: .assets/dog-ring.jpg
 import: github.com/freddo3000/traefik-gssapi
 
 summary: 'GSSAPI Authentication Middleware'
+useUnsafe: true
 
 testData:
   Keytab: '/etc/krb5.keytab'
