@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/jcmturner/gokrb5/v8/config"
+	krbconfig "github.com/jcmturner/gokrb5/v8/config"
 	"github.com/jcmturner/gokrb5/v8/keytab"
 	"github.com/jcmturner/gokrb5/v8/service"
 	"github.com/jcmturner/gokrb5/v8/spnego"
@@ -33,18 +33,18 @@ func CreateConfig() *Config {
 type GssAuth struct {
 	next   http.Handler
 	keytab *keytab.Keytab
-	config *config.Config
+	config *krbconfig.Config
 	name   string
 	realm  string
 }
 
 // New created a new GssAuth plugin.
-func New(ctx context.Context, next http.Handler, cfg *Config, name string) (http.Handler, error) {
-	kt, err := keytab.Load(cfg.Keytab)
+func New(ctx context.Context, next http.Handler, config *Config, name string) (http.Handler, error) {
+	kt, err := keytab.Load(config.Keytab)
 	if err != nil {
 		return nil, err
 	}
-	conf, err := config.Load(cfg.Config)
+	conf, err := krbconfig.Load(config.Config)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func New(ctx context.Context, next http.Handler, cfg *Config, name string) (http
 		next:   next,
 		name:   name,
 		config: conf,
-		realm:  cfg.Realm,
+		realm:  config.Realm,
 	}, nil
 }
 
